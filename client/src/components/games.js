@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { getGames } from '../services/fakeGameService';
 import Like from './common/like';
+import Pagination from './common/pagination';
+import { paginate } from '../utils/paginate';
 
 class Games extends Component {
   state = {
     games: getGames(),
+    currentPage: 1,
+    pageSize: 4,
   };
 
   handleDelete = (game) => {
@@ -21,10 +25,17 @@ class Games extends Component {
     this.setState({ games });
   };
 
+  handlePageChange = (page) => {
+    this.setState({ currentPage: page });
+  };
+
   render() {
     const { length: count } = this.state.games;
+    const { pageSize, currentPage, games: allGames } = this.state;
 
     if (count === 0) return <p>There are no games in the database</p>;
+
+    const games = paginate(allGames, currentPage, pageSize);
 
     return (
       <React.Fragment>
@@ -42,7 +53,7 @@ class Games extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.games.map((game) => (
+            {games.map((game) => (
               <tr key={game._id}>
                 <td>{game.title}</td>
                 <td>{game.genre.name}</td>
@@ -65,6 +76,12 @@ class Games extends Component {
             ))}
           </tbody>
         </table>
+        <Pagination
+          itemsCount={count}
+          pageSize={pageSize}
+          currentPage={currentPage}
+          onPageChange={this.handlePageChange}
+        />
       </React.Fragment>
     );
   }
