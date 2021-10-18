@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getGames } from '../services/fakeGameService';
+import Like from './common/like';
 
 class Games extends Component {
   state = {
@@ -8,6 +9,15 @@ class Games extends Component {
 
   handleDelete = (game) => {
     const games = this.state.games.filter((g) => g._id !== game._id);
+    this.setState({ games });
+  };
+
+  handleLike = (game) => {
+    const games = [...this.state.games];
+    const index = games.indexOf(game);
+    games[index] = { ...games[index] };
+    games[index].liked = !games[index].liked;
+
     this.setState({ games });
   };
 
@@ -28,6 +38,7 @@ class Games extends Component {
               <th>Stock</th>
               <th>Rate</th>
               <th></th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -37,6 +48,12 @@ class Games extends Component {
                 <td>{game.genre.name}</td>
                 <td>{game.numberInStock}</td>
                 <td>{game.dailyRentalRate}</td>
+                <td>
+                  <Like
+                    liked={game.liked}
+                    onClick={() => this.handleLike(game)}
+                  />
+                </td>
                 <td>
                   <button
                     onClick={() => this.handleDelete(game)}
