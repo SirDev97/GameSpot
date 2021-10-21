@@ -4,6 +4,7 @@ import _ from 'lodash';
 import { getGames } from '../services/fakeGameService';
 import { getGenres } from '../services/fakeGenreService';
 import GamesTable from './gamesTable';
+import SearchBox from './searchBox';
 import ListGroup from './common/listGroup';
 import Pagination from './common/pagination';
 import { paginate } from '../utils/paginate';
@@ -14,6 +15,8 @@ class Games extends Component {
     genres: [],
     currentPage: 1,
     pageSize: 4,
+    searchQuery: '',
+    selectedGenre: null,
     sortColumn: { path: 'title', order: 'asc' },
   };
 
@@ -41,11 +44,15 @@ class Games extends Component {
   };
 
   handleGenreSelect = (genre) => {
-    this.setState({ selectedGenre: genre, currentPage: 1 });
+    this.setState({ selectedGenre: genre, searchQuery: '', currentPage: 1 });
   };
 
   handleSort = (sortColumn) => {
     this.setState({ sortColumn });
+  };
+
+  handleSearch = (query) => {
+    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 });
   };
 
   getPagedData = () => {
@@ -54,13 +61,17 @@ class Games extends Component {
       currentPage,
       sortColumn,
       selectedGenre,
+      searchQuery,
       games: allGames,
     } = this.state;
 
-    const filtered =
-      selectedGenre && selectedGenre._id
-        ? allGames.filter((g) => g.genre._id === selectedGenre._id)
-        : allGames;
+    let filtered = allGames;
+    if (searchQuery)
+      filtered = allGames.filter((g) =>
+        g.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+      );
+    else if (selectedGenre && selectedGenre._id)
+      filtered = allGames.filter((g) => g.genre._id === selectedGenre._id);
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
@@ -71,7 +82,7 @@ class Games extends Component {
 
   render() {
     const { length: count } = this.state.games;
-    const { pageSize, currentPage, sortColumn } = this.state;
+    const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
 
     if (count === 0) return <p>There are no games in the database</p>;
 
@@ -95,6 +106,8 @@ class Games extends Component {
           </Link>
 
           <p>Showing {totalCount} games in the database.</p>
+
+          <SearchBox value={searchQuery} onChange={this.handleSearch} />
 
           <GamesTable
             games={games}
