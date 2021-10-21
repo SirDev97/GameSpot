@@ -76,15 +76,15 @@ export function getGame(id) {
   return games.find((g) => g._id === id);
 }
 
-export function savegame(game) {
+export function saveGame(game) {
   let gameInDb = games.find((g) => g._id === game._id) || {};
-  gameInDb.name = game.name;
+  gameInDb.title = game.title;
   gameInDb.genre = genresAPI.genres.find((g) => g._id === game.genreId);
   gameInDb.numberInStock = game.numberInStock;
   gameInDb.dailyRentalRate = game.dailyRentalRate;
 
   if (!gameInDb._id) {
-    gameInDb._id = Date.now();
+    gameInDb._id = Date.now().toString();
     games.push(gameInDb);
   }
 

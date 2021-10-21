@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import { getGames } from '../services/fakeGameService';
-import Pagination from './common/pagination';
-import { paginate } from '../utils/paginate';
-import ListGroup from './common/listGroup';
 import { getGenres } from '../services/fakeGenreService';
 import GamesTable from './gamesTable';
-import _ from 'lodash';
+import ListGroup from './common/listGroup';
+import Pagination from './common/pagination';
+import { paginate } from '../utils/paginate';
 
 class Games extends Component {
   state = {
@@ -86,7 +87,15 @@ class Games extends Component {
           />
         </div>
         <div className="col">
+          <Link
+            to="/games/new"
+            className="btn btn-primary"
+            style={{ marginBottom: 20 }}>
+            New Game
+          </Link>
+
           <p>Showing {totalCount} games in the database.</p>
+
           <GamesTable
             games={games}
             sortColumn={sortColumn}
@@ -94,6 +103,7 @@ class Games extends Component {
             onDelete={this.handleDelete}
             onSort={this.handleSort}
           />
+
           <Pagination
             itemsCount={totalCount}
             pageSize={pageSize}
