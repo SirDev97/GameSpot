@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
+
 import { getGames } from '../services/fakeGameService';
-import { getGenres } from '../services/fakeGenreService';
+import { getGenres } from '../services/genreService';
+
 import GamesTable from './gamesTable';
 import SearchBox from './searchBox';
+
 import ListGroup from './common/listGroup';
 import Pagination from './common/pagination';
+
 import { paginate } from '../utils/paginate';
 
 class Games extends Component {
@@ -20,8 +24,9 @@ class Games extends Component {
     sortColumn: { path: 'title', order: 'asc' },
   };
 
-  componentDidMount() {
-    const genres = [{ _id: '', name: 'All Genres' }, ...getGenres()];
+  async componentDidMount() {
+    const { data } = await getGenres;
+    const genres = [{ _id: '', name: 'All Genres' }, ...data];
     this.setState({ games: getGames(), genres });
   }
 
