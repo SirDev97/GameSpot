@@ -10,8 +10,12 @@ const data = [{
         name: 'MMORPG',
         games: [
             { title: 'World of Warcraft', numberInStock: 5, dailyRentalRate: 2 },
-            { title: 'The Hangover', numberInStock: 10, dailyRentalRate: 2 },
-            { title: 'Wedding Crashers', numberInStock: 15, dailyRentalRate: 2 },
+            {
+                title: 'Star Wars: The Old Republic',
+                numberInStock: 10,
+                dailyRentalRate: 2,
+            },
+            { title: 'Blade And Sould', numberInStock: 15, dailyRentalRate: 2 },
         ],
     },
     {
