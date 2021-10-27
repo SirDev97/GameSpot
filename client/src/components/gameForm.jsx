@@ -1,8 +1,8 @@
 import React from 'react';
 import Joi from 'joi-browser';
 import Form from './common/form';
-import { getGame, saveGame } from '../services/fakeGameService';
-import { getGenres } from '../services/fakeGenreService';
+import { getGame, saveGame } from '../services/gameService';
+import { getGenres } from '../services/genreService';
 
 class GameForm extends Form {
   state = {
@@ -32,17 +32,27 @@ class GameForm extends Form {
       .label('Daily Rental Rate'),
   };
 
-  componentDidMount() {
-    const genres = getGenres();
+  async populateGenres() {
+    const { data: genres } = await getGenres();
     this.setState({ genres });
+  }
 
+  async populateGame() {
     const gameId = this.props.match.params.id;
     if (gameId === 'new') return;
 
-    const game = getGame(gameId);
-    if (!game) return this.props.history.replace('/not-found');
+    try {
+      const { data: game } = await getGame(gameId);
+      this.setState({ data: this.mapToViewModel(game) });
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        this.props.history.replace('/not-found');
+    }
+  }
 
-    this.setState({ data: this.mapToViewModel(game) });
+  async componentDidMount() {
+    await this.populateGenres();
+    await this.populateGame();
   }
 
   mapToViewModel(game) {
@@ -55,8 +65,8 @@ class GameForm extends Form {
     };
   }
 
-  doSubmit = () => {
-    saveGame(this.state.data);
+  doSubmit = async () => {
+    await saveGame(this.state.data);
 
     this.props.history.push('/games');
   };

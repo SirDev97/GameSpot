@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import _ from 'lodash';
 
-import { getGames } from '../services/fakeGameService';
+import { getGames, deleteGame } from '../services/gameService';
 import { getGenres } from '../services/genreService';
 
 import GamesTable from './gamesTable';
@@ -25,14 +26,25 @@ class Games extends Component {
   };
 
   async componentDidMount() {
-    const { data } = await getGenres;
+    const { data } = await getGenres();
     const genres = [{ _id: '', name: 'All Genres' }, ...data];
-    this.setState({ games: getGames(), genres });
+
+    const { data: games } = await getGames();
+    this.setState({ games, genres });
   }
 
-  handleDelete = (game) => {
-    const games = this.state.games.filter((g) => g._id !== game._id);
+  handleDelete = async (game) => {
+    const originalGames = this.state.games;
+    const games = originalGames.filter((g) => g._id !== game._id);
     this.setState({ games });
+
+    try {
+      await deleteGame(game._id);
+    } catch (ex) {
+      if (ex.response && ex.response.status === 404)
+        toast.error('This game has already been deleted.');
+      this.setState({ games: originalGames });
+    }
   };
 
   handleLike = (game) => {

@@ -21,25 +21,17 @@ function App() {
         <ToastContainer />
         <NavBar />
         <Switch>
-          <Route path="/register" component={RegisterForm} />{' '}
-          <Route path="/login" component={LoginForm} />{' '}
-          <Route path="/games/:id" component={GameForm} />{' '}
-          <Route path="/games" component={Games}>
-            {' '}
-          </Route>{' '}
-          <Route path="/customers" component={Customers}>
-            {' '}
-          </Route>{' '}
-          <Route path="/rentals" component={Rentals}>
-            {' '}
-          </Route>{' '}
-          <Route path="/not-found" component={NotFound}>
-            {' '}
-          </Route>{' '}
+          <Route path="/register" component={RegisterForm} />
+          <Route path="/login" component={LoginForm} />
+          <Route path="/games/:id" component={GameForm} />
+          <Route path="/games" component={Games} />
+          <Route path="/customers" component={Customers} />
+          <Route path="/rentals" component={Rentals} />
+          <Route path="/not-found" component={NotFound} />
           <Redirect from="/" exact to="/games" />
           <Redirect to="/not-found" />
-        </Switch>{' '}
-      </main>{' '}
+        </Switch>
+      </main>
     </React.Fragment>
   );
 }
