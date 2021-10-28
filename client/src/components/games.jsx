@@ -100,6 +100,7 @@ class Games extends Component {
   render() {
     const { length: count } = this.state.games;
     const { pageSize, currentPage, sortColumn, searchQuery } = this.state;
+    const { user } = this.props;
 
     if (count === 0) return <p>There are no games in the database</p>;
 
@@ -115,12 +116,14 @@ class Games extends Component {
           />
         </div>
         <div className="col">
-          <Link
-            to="/games/new"
-            className="btn btn-primary"
-            style={{ marginBottom: 20 }}>
-            New Game
-          </Link>
+          {user && (
+            <Link
+              to="/games/new"
+              className="btn btn-primary"
+              style={{ marginBottom: 20 }}>
+              New Game
+            </Link>
+          )}
 
           <p>Showing {totalCount} games in the database.</p>
 
